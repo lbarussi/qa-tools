@@ -1,6 +1,6 @@
 # QA Tools
 
-The idea of this project is to provide As (or even Devs) with a simple, intuitive, fast and practical way of generating fictitious data.
+The idea of this project is to provide QAs (or even Devs) with a simple, intuitive, fast and practical way of generating fictitious data.
 
 ## Features
 
@@ -15,6 +15,6 @@ The idea of this project is to provide As (or even Devs) with a simple, intuitiv
 
 ## OS supported
 
-At the moment, this project only runs on MacOS, but will not be developed for Windows and Linux.
+At the moment, this project only runs on macOS, but will not be developed for Windows and Linux.
 
 Follow this project to stay up to date with the project's features and releases!
