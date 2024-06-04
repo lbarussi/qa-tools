@@ -1,11 +1,11 @@
 <template>
-  <ARow :gutter="5">
+  <ARow :gutter="[5, 5]">
     <ACol :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-      <a-input-search placeholder="Validate or generate document" v-model:value="document">
+      <AInputSearch placeholder="Validate or generate document" v-model:value="document">
         <template #enterButton>
-          <a-button type="primary" @click="generate">Generate</a-button>
+          <AButton type="primary" @click="generate">Generate</AButton>
         </template>
-      </a-input-search>
+      </AInputSearch>
     </ACol>
   </ARow>
 </template>
@@ -13,6 +13,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { invoke } from "@tauri-apps/api/tauri";
+import { message } from "ant-design-vue";
 
 export default defineComponent({
   name: "CPF",
@@ -21,12 +22,9 @@ export default defineComponent({
   }),
   methods: {
     async generate() {
-      try {
-        this.document = await invoke("generate_cpf", {});
-      } catch (exception) {
-        // TODO: Remove this
-        console.error(exception)
-      }
+      this.document = await invoke("generate_cpf", {});
+      await navigator.clipboard.writeText(String(this.document));
+      message.success('Copiado para área de transferencia!');
     },
   }
 })

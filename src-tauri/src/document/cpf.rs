@@ -2,7 +2,8 @@ use rand::Rng;
 use rand::rngs::ThreadRng;
 
 pub struct CPF {
-    pub generate_document: String
+    pub generate_document: String,
+    pub validate_document: bool
 }
 
 impl CPF {
@@ -13,8 +14,10 @@ impl CPF {
         return Self::format_document(document.iter().copied().collect());
     }
 
-    fn validate_document() -> bool {
-        todo!()
+    pub fn validate_document(document: String) -> bool {
+        let document_divided = document.split("");
+
+        return true;
     }
 
     fn generate_numbers() -> Vec<u32> {

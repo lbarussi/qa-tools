@@ -1,16 +1,14 @@
 <template>
   <div>
-    <CPF /><Greet />
+    <CPF />
   </div>
 </template>
 
 <script lang="ts">
 import {defineComponent} from 'vue'
-import Greet from "../Greet.vue";
 
 export default defineComponent({
   name: "Documents",
-  components: {Greet}
 })
 </script>
 

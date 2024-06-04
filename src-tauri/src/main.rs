@@ -3,36 +3,18 @@
 
 mod document;
 
-use document::CPF;
+use document::{generate_cpf, validate_cpf};
 use tauri::{Manager, SystemTray, SystemTrayEvent, Window};
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 use tauri_plugin_positioner::{WindowExt, Position};
 use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
 
 
-#[tauri::command]
-fn generate_cpf() -> String {
-    println!("{}", CPF::generate_document());
-    return CPF::generate_document();
-}
-
 fn main() {
-    let tray = SystemTray::new();
-
-    let quit = CustomMenuItem::new("quit".to_string(), "Quit");
-    let hide = CustomMenuItem::new("hide".to_string(), "Hide");
-    let tray_menu = SystemTrayMenu::new()
-        .add_item(quit)
-        .add_native_item(SystemTrayMenuItem::Separator)
-        .add_item(hide);
-
-    let tray_menu = SystemTrayMenu::new();
-    let system_tray = SystemTray::new()
-        .with_menu(tray_menu);
-
     tauri::Builder::default()
         .plugin(tauri_plugin_positioner::init())
-        .system_tray(system_tray)
+        .invoke_handler(tauri::generate_handler![generate_cpf, validate_cpf])
+        .system_tray(mount_base_tauri())
         .setup(|app| {
             let handle = app.handle();
             let win: Window = app.get_window("main").unwrap();
@@ -67,4 +49,18 @@ fn main() {
             }
         }).run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+fn mount_base_tauri() -> SystemTray {
+    let quit = CustomMenuItem::new("quit".to_string(), "Quit");
+    let hide = CustomMenuItem::new("hide".to_string(), "Hide");
+    let tray_menu = SystemTrayMenu::new()
+        .add_item(quit)
+        .add_native_item(SystemTrayMenuItem::Separator)
+        .add_item(hide);
+
+    let system_tray = SystemTray::new()
+        .with_menu(tray_menu);
+
+    return system_tray
 }
