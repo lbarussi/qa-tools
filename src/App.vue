@@ -1,15 +1,15 @@
 <script lang="ts">
-  import {defineComponent} from "vue";
+  import { defineComponent } from "vue";
   import Content from "./components/Content.vue";
-  import CPF from "./components/humanComponents/CPF.vue";
-  import Documents from "./components/humanComponents/Documents.vue";
+  import BaseGenerator from "./components/generators/BaseGenerator.vue";
+  import BaseValidator from "./components/validators/BaseValidator.vue";
 
   export default defineComponent({
     name: "App",
     components: {
-      Documents,
-      CPF,
-      Content
+      BaseGenerator,
+      Content,
+      BaseValidator
     },
     data: () => ({
       activeKey: "1",
@@ -24,10 +24,18 @@
         <ATabPane key="1">
           <template #tab>
             <span style="color: white">
-              Human data
+              Geradores
             </span>
           </template>
-          <Documents />
+          <BaseGenerator />
+        </ATabPane>
+        <ATabPane key="2">
+          <template #tab>
+            <span style="color: white">
+              Validadores
+            </span>
+          </template>
+          <BaseValidator />
         </ATabPane>
       </ATabs>
     </template>

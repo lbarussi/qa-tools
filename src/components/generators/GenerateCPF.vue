@@ -1,13 +1,13 @@
 <template>
-  <ARow :gutter="[5, 5]">
-    <ACol :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-      <AInputSearch placeholder="Validate or generate document" v-model:value="document">
-        <template #enterButton>
-          <AButton type="primary" @click="generate">Generate</AButton>
-        </template>
-      </AInputSearch>
-    </ACol>
-  </ARow>
+  <div style="display: flex">
+    <AInput v-model:value="document" size="large">
+    </AInput>
+    <div style="margin-left: 5px">
+      <AButton type="primary" @click="generate" size="large" :disabled="document === ''">
+        Gerar CPF
+      </AButton>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -22,7 +22,7 @@ export default defineComponent({
   }),
   methods: {
     async generate() {
-      this.document = await invoke("generate_cpf", {});
+      this.document = await invoke("generate_cpf");
       await navigator.clipboard.writeText(String(this.document));
       message.success('Copiado para área de transferencia!');
     },

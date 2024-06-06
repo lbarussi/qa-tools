@@ -1,5 +1,6 @@
 use rand::Rng;
 use rand::rngs::ThreadRng;
+use regex::{Captures, Regex};
 
 pub struct CPF {
     pub generate_document: String,
@@ -9,15 +10,47 @@ pub struct CPF {
 impl CPF {
     pub fn generate_document() -> String {
         let mut numbers: Vec<u32> = Self::generate_numbers();
-        let document = Self::calculate_digits(&mut numbers, false);
+        let document: &mut Vec<u32> = Self::calculate_digits(&mut numbers, false);
 
-        return Self::format_document(document.iter().copied().collect());
+        return Self::format_document(document.iter().copied().collect(), true);
     }
 
     pub fn validate_document(document: String) -> bool {
-        let document_divided = document.split("");
+        if document.len() != 11 {
+            return false;
+        }
 
-        return true;
+        let regex: Regex = Regex::new(r"\D").unwrap();
+        let has_invalid_characters: Option<Captures> = regex.captures(&document);
+
+        if has_invalid_characters.iter().len() > 0 {
+            return false;
+        }
+
+        let mut numbers: Vec<u32> = vec![];
+
+        for document in document.split("") {
+            if document.is_empty() {
+                continue;
+            }
+
+            let number_as_integer: u32 = document.parse::<u32>().unwrap();
+
+            if numbers.iter().len() < 9 {
+                numbers.push(number_as_integer);
+                continue;
+            }
+
+            break;
+        }
+
+        let full_document: String =
+                Self::format_document(
+                    Self::calculate_digits(&mut numbers, false).iter().copied().collect(),
+                    false
+                );
+
+        return full_document == document;
     }
 
     fn generate_numbers() -> Vec<u32> {
@@ -45,7 +78,7 @@ impl CPF {
             base_numbers.push(number * (base_number_calculator - (index + 1)));
         }
 
-        let sum_of_first_digit = base_numbers.iter().copied().reduce(|a, b| a + b);
+        let sum_of_first_digit = base_numbers.iter().copied().reduce(|a: u32, b: u32| a + b);
 
         let rest_of_division = sum_of_first_digit.unwrap() % 11;
 
@@ -62,13 +95,23 @@ impl CPF {
         return numbers;
     }
 
-    fn format_document(document: Vec<u32>) -> String {
+    fn format_document(document: Vec<u32>, apply_mask: bool) -> String {
         let document_as_string: String = document.iter().map(|number: &u32| {
             return number.to_string()
         }).collect();
 
+        if apply_mask {
+            return format!(
+                "{}.{}.{}-{}",
+                &document_as_string[0..3],
+                &document_as_string[3..6],
+                &document_as_string[6..9],
+                &document_as_string[9..11],
+            )
+        }
+
         return format!(
-            "{}.{}.{}-{}",
+            "{}{}{}{}",
             &document_as_string[0..3],
             &document_as_string[3..6],
             &document_as_string[6..9],
