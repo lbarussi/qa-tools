@@ -2,10 +2,10 @@ use crate::document::CPF;
 
 #[tauri::command]
 pub fn generate_cpf() -> String {
-    return CPF::generate_document();
+    return CPF::generate();
 }
 
 #[tauri::command]
 pub fn validate_cpf(document: String) -> bool {
-    return CPF::validate_document(document);
+    return CPF::validate(document);
 }

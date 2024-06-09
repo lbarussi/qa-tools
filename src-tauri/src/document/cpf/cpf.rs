@@ -1,21 +1,21 @@
-use rand::Rng;
-use rand::rngs::ThreadRng;
 use regex::{Captures, Regex};
 
+use crate::helpers::RandomNumbers;
+
 pub struct CPF {
-    pub generate_document: String,
-    pub validate_document: bool
+    pub generate: String,
+    pub validate: bool
 }
 
 impl CPF {
-    pub fn generate_document() -> String {
-        let mut numbers: Vec<u32> = Self::generate_numbers();
+    pub fn generate() -> String {
+        let mut numbers: Vec<u32> = RandomNumbers::generate( 9);
         let document: &mut Vec<u32> = Self::calculate_digits(&mut numbers, false);
 
         return Self::format_document(document.iter().copied().collect(), true);
     }
 
-    pub fn validate_document(document: String) -> bool {
+    pub fn validate(document: String) -> bool {
         if document.len() != 11 {
             return false;
         }
@@ -51,18 +51,6 @@ impl CPF {
                 );
 
         return full_document == document;
-    }
-
-    fn generate_numbers() -> Vec<u32> {
-        let mut rng: ThreadRng = rand::thread_rng();
-        let mut numbers: Vec<u32> = vec![];
-
-        for _ in 0..9 {
-            let random_number: u32 = rng.gen_range(0..9);
-            numbers.push(random_number)
-        }
-
-        return numbers;
     }
 
     fn calculate_digits(numbers: &mut Vec<u32>, next: bool) -> &mut Vec<u32> {

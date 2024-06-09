@@ -2,9 +2,10 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod document;
+mod helpers;
 
 use document::{generate_cpf, validate_cpf};
-use tauri::{Manager, SystemTray, SystemTrayEvent, Window};
+use tauri::{Manager, SystemTray, SystemTrayEvent};
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 use tauri_plugin_positioner::{WindowExt, Position};
 use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectState};
@@ -16,18 +17,15 @@ fn main() {
         .invoke_handler(tauri::generate_handler![generate_cpf, validate_cpf])
         .system_tray(mount_base_tauri())
         .setup(|app| {
-            let handle = app.handle();
-            let win: Window = app.get_window("main").unwrap();
-
-            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
-
             #[cfg(target_os = "macos")]
             apply_vibrancy(
-                &win,
+                app.get_window("main").unwrap(),
                 NSVisualEffectMaterial::Menu,
                 Some(NSVisualEffectState::Active),
                 Some(8.0)
             ).expect("Unsupported platform! 'apply_vibrancy' is only supported on macOS");
+
+            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
 
             Ok(())
         }).on_system_tray_event(|app, event| {
@@ -39,7 +37,7 @@ fn main() {
                     size: _,
                     ..
                 } => {
-                    let mut win = app.get_window("main").unwrap();
+                    let win = app.get_window("main").unwrap();
                     let _ = win.move_window(Position::TrayCenter);
 
                     win.show().unwrap();
