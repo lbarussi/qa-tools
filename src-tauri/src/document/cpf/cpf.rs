@@ -9,8 +9,8 @@ pub struct CPF {
 
 impl CPF {
     pub fn generate() -> String {
-        let mut numbers: Vec<u32> = RandomNumbers::generate( 9);
-        let document: &mut Vec<u32> = Self::calculate_digits(&mut numbers, false);
+        let mut numbers: Vec<u16> = RandomNumbers::generate( 9);
+        let document: &mut Vec<u16> = Self::calculate_digits(&mut numbers, false);
 
         return Self::format_document(document.iter().copied().collect(), true);
     }
@@ -27,14 +27,14 @@ impl CPF {
             return false;
         }
 
-        let mut numbers: Vec<u32> = vec![];
+        let mut numbers: Vec<u16> = vec![];
 
         for document in document.split("") {
             if document.is_empty() {
                 continue;
             }
 
-            let number_as_integer: u32 = document.parse::<u32>().unwrap();
+            let number_as_integer: u16 = document.parse::<u16>().unwrap();
 
             if numbers.iter().len() < 9 {
                 numbers.push(number_as_integer);
@@ -53,20 +53,20 @@ impl CPF {
         return full_document == document;
     }
 
-    fn calculate_digits(numbers: &mut Vec<u32>, next: bool) -> &mut Vec<u32> {
-        let mut base_numbers: Vec<u32> = vec![];
-        let mut base_number_calculator: u32 = 11;
+    fn calculate_digits(numbers: &mut Vec<u16>, next: bool) -> &mut Vec<u16> {
+        let mut base_numbers: Vec<u16> = vec![];
+        let mut base_number_calculator: u16 = 11;
 
         if next {
             base_number_calculator = 12;
         }
 
         for (i, &number) in numbers.iter().enumerate() {
-            let index: u32 = i as u32;
+            let index: u16 = i as u16;
             base_numbers.push(number * (base_number_calculator - (index + 1)));
         }
 
-        let sum_of_first_digit = base_numbers.iter().copied().reduce(|a: u32, b: u32| a + b);
+        let sum_of_first_digit = base_numbers.iter().copied().reduce(|a: u16, b: u16| a + b);
 
         let rest_of_division = sum_of_first_digit.unwrap() % 11;
 
@@ -83,8 +83,8 @@ impl CPF {
         return numbers;
     }
 
-    fn format_document(document: Vec<u32>, apply_mask: bool) -> String {
-        let document_as_string: String = document.iter().map(|number: &u32| {
+    fn format_document(document: Vec<u16>, apply_mask: bool) -> String {
+        let document_as_string: String = document.iter().map(|number: &u16| {
             return number.to_string()
         }).collect();
 

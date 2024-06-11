@@ -6,10 +6,11 @@ pub struct RandomNumbers {
 }
 
 impl RandomNumbers {
-    pub fn generate(size: u32) -> Vec<u32> {
+    pub fn generate(size: u16) -> Vec<u16> {
         let mut rng: ThreadRng = rand::thread_rng();
-        let numbers: Vec<u32> = (0..size).map(|_| rng.gen_range(0..=9)).collect();
+        let numbers: Vec<u16> = (0..size).map(|_| rng.gen_range(0..=9)).collect();
 
         return numbers;
     }
+
 }
