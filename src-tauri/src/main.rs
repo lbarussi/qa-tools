@@ -4,7 +4,7 @@
 mod document;
 mod helpers;
 
-use document::{generate_cpf, validate_cpf};
+use document::{generate_cpf, validate_cpf, generate_cnpj};
 use tauri::{Manager, SystemTray, SystemTrayEvent};
 use tauri::{CustomMenuItem, SystemTrayMenu, SystemTrayMenuItem};
 use tauri_plugin_positioner::{WindowExt, Position};
@@ -14,7 +14,7 @@ use window_vibrancy::{apply_vibrancy, NSVisualEffectMaterial, NSVisualEffectStat
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_positioner::init())
-        .invoke_handler(tauri::generate_handler![generate_cpf, validate_cpf])
+        .invoke_handler(tauri::generate_handler![generate_cpf, validate_cpf, generate_cnpj])
         .system_tray(mount_base_tauri())
         .setup(|app| {
             #[cfg(target_os = "macos")]
